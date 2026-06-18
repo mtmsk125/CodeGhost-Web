@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path'); // هاد الجديد عشان الملفات
+const path = require('path');
 require('dotenv').config();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
@@ -9,18 +9,14 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
-
-// هاد السطر بخلي السيرفر يقرأ ملف index.html
 app.use(express.static(path.join(__dirname)));
 
 if (!process.env.GEMINI_API_KEY) {
-    console.error("❌ FATAL ERROR: GEMINI_API_KEY مش موجود");
+    console.error("❌ GEMINI_API_KEY مش موجود");
     process.exit(1);
 }
 
 console.log("🚀 Starting CodeGhost...");
-console.log("PORT:", PORT);
-
 let model;
 try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -30,7 +26,7 @@ try {
     });
     console.log("✅ Gemini initialized");
 } catch(e) {
-    console.error("❌ Gemini Init Error:", e.message);
+    console.error("❌ Gemini Error:", e.message);
     process.exit(1);
 }
 
@@ -56,11 +52,12 @@ app.post('/api/fix', async (req, res) => {
     }
 });
 
-// هاد السطر الجديد: لما حدا يفتح الرابط الأساسي، فرجيه index.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/ping', (req, res) => res.status(200).send('pong'));
 
-app.listen(PORT, '0.0.0.0', () => console.log(`🚀 Server running on ${PORT}`
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server running on ${PORT}`);
+});
