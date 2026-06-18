@@ -1,56 +1,64 @@
-import express from 'express';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+const express = require('express');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const path = require('path');
+require('dotenv').config();
 
 const app = express();
-app.use(express.json({limit: '2mb'}));
-app.use(express.static('.'));
+const port = process.env.PORT || 3000;
 
-const GEMINI_KEY = process.env.GEMINI_API_KEY;
-if(!GEMINI_KEY) {
-    console.log('ERROR: حط GEMINI_API_KEY بالـ Environment Variables تبع Render');
+// Initialize Gemini
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname)));
+
+// API endpoint
+app.post('/api/fix', async (req, res) => {
+    try {
+        const { code, error, language } = req.body;
+        
+        if (!code || !error) {
+            return res.status(400).json({ error: 'Code and Error are required' });
+        }
+
+        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        
+        const prompt = `You are a senior ${language} developer. Fix the code and explain the bug clearly.
+Return ONLY valid JSON with this exact format:
+{
+  "fixedCode": "the corrected code here",
+  "explanation": "simple explanation why the bug happened and how the fix works"
 }
 
-const genAI = new GoogleGenerativeAI(GEMINI_KEY);
+Code:
+${code}
 
-app.post('/fix', async (req, res) => {
-    try {
-        const {code, error} = req.body;
-        
-        if(!code || !error) {
-            return res.json({fixedCode: 'الكود أو الـ Error فاضي يا معلم'});
-        }
-        
-        // سر الخلطة - البرومبت القاتل
-        const prompt = `انت مهندس برمجيات سينيور خبرة 20 سنة. مهمتك وحدة: تصليح Bugs.
-        
-        عندك كود فيه مشكلة + رسالة خطأ من الـ Terminal.
-        رجعلي الكود كامل مصح 100%. بدون شرح. بدون مقدمات. بدون "هون الكود". بس الكود.
-        
-        لو ما قدرت تصلحه، رجع الكود الأصلي.
-        
-        رسالة الخطأ:
-        ${error}
-        
-        الكود:
-        \`\`
-        ${code}
-        \`\`
-        
-        الكود المصح كامل الآن:`;
-        
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+Error:
+${error}`;
+
         const result = await model.generateContent(prompt);
-        let fixedCode = result.response.text();
+        const response = result.response.text();
         
-        // بنشيل ``` من أول وآخر الكود إذا الـ AI حطها
-        fixedCode = fixedCode.replace(/```[a-z]*\n/g, '').replace(/```$/g, '').trim();
+        // Clean response and parse JSON
+        const jsonStr = response.replace(/```json/g, '').replace(/```/g, '').trim();
+        const parsed = JSON.parse(jsonStr);
         
-        res.json({fixedCode});
-    } catch(e) {
-        console.log('Error:', e.message);
-        res.json({fixedCode: 'صار خطأ بالـ AI يا وحش. جرب مرة ثانية 👻'});
+        res.json(parsed);
+        
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ 
+            error: 'AI failed to process. Try again.',
+            fixedCode: code 
+        });
     }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`CodeGhost شغال على بورت ${PORT} 👻`));
+// Serve index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.listen(port, () => {
+    console.log(`CodeGhost AI running on port ${port}`);
+});
