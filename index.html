@@ -2,54 +2,57 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>CodeGhost 👻</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeGhost 👻 Code Fixer</title>
 <style>
-body{background:#0f172a;color:#e2e8f0;font-family:Cairo;padding:20px}
-.container{max-width:800px;margin:auto}
-.card{background:#1e293b;padding:25px;border-radius:16px;margin-top:20px}
-textarea,select{width:100%;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:10px;padding:14px;font-size:15px;margin-top:8px}
-button{background:#38bdf8;color:#fff;border:none;padding:14px;border-radius:10px;cursor:pointer;font-weight:bold;margin-top:15px;width:100%}
-pre{background:#000;color:#4ade80;padding:15px;border-radius:8px}
-</style>
-</head>
-<body>
-<div class="container">
-<h1 style="text-align:center;color:#38bdf8">CodeGhost 👻</h1>
-<p style="text-align:center;opacity:0.7">الصق الكود الخربان والخطأ والـ AI بصلحه</p>
-
-<div class="card">
-<label>لغة البرمجة:</label>
-<select id="lang"><option>JavaScript</option><option>Python</option><option>HTML/CSS</option></select>
-
-<label>الكود الخربان:</label>
-<textarea id="code" placeholder="// الصق الكود هون"></textarea>
-
-<label>رسالة الخطأ:</label>
-<textarea id="error" placeholder="Error:..." style="height:90px"></textarea>
-
-<button onclick="fixCode()">🔧 صلح الكود</button>
-
-<div id="result" style="display:none;margin-top:20px">
-<h3>الكود المصح:</h3><pre id="fixedCode"></pre>
-<h3>الشرح:</h3><p id="explanation"></p>
-</div>
-</div>
-</div>
-
-<script>
-const API_URL = 'https://codeghost-web.onrender.com/api/fix';
-async function fixCode(){
-  const code=document.getElementById('code').value;
-  const error=document.getElementById('error').value;
-  const lang=document.getElementById('lang').value;
-  if(!code || !error){alert('عبي الكود والخطأ');return}
-  
-  const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,error,language:lang})});
-  const data=await res.json();
-  document.getElementById('fixedCode').innerText=data.fixedCode;
-  document.getElementById('explanation').innerText=data.explanation;
-  document.getElementById('result').style.display='block';
+* {margin:0; padding:0; box-sizing:border-box}
+body {
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: 'Cairo', 'Segoe UI', sans-serif;
+  padding: 20px;
+  min-height: 100vh;
 }
-</script>
-</body>
-</html>
+.container {max-width: 800px; margin: auto}
+h1 {
+  text-align: center;
+  color: #38bdf8;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+.subtitle {
+  text-align: center;
+  opacity: 0.7;
+  margin-bottom: 30px;
+  font-size: 1.1rem;
+}
+.card {
+  background: #1e293b;
+  padding: 25px;
+  border-radius: 16px;
+  border: 1px solid #334155;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+select, textarea {
+  width: 100%;
+  background: #0f172a;
+  color: #e2e8f0;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 15px;
+  transition: border 0.2s;
+}
+select:focus, textarea:focus {
+  outline: none;
+  border-color: #38bdf8;
+}
+textarea {
+  font-family: 'Cascadia
