@@ -1,104 +1,73 @@
-
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeGhost 👻 - AI Bug Fixer</title>
+    <title>CodeGhost AI - Professional Bug Fixer</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box }
-        body { 
-            background:#0a0a0a; 
-            color:#eee; 
-            font-family:'Cairo', sans-serif; 
-            text-align:center; 
-            padding:40px 20px;
-            min-height:100vh;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            padding: 40px 20px;
+            min-height: 100vh;
         }
-        h1 { color:#ff0055; font-size:48px; margin-bottom:10px }
-        p { color:#aaa; margin-bottom:30px; font-size:18px }
-        .box { max-width:800px; margin:0 auto }
-        textarea { 
-            width:100%; 
-            height:200px; 
-            background:#1a1a1a; 
-            color:#0f0; 
-            border:2px solid #333; 
-            padding:15px; 
-            margin:10px 0; 
-            font-family:monospace;
-            font-size:14px;
-            border-radius:8px;
-            resize:vertical;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
         }
-        textarea:focus { border-color:#ff0055; outline:none }
-        button { 
-            background:#ff0055; 
-            color:white; 
-            border:none; 
-            padding:18px 50px; 
-            font-size:20px; 
-            cursor:pointer; 
-            border-radius:10px;
-            font-weight:bold;
-            margin:20px 0;
-            transition:0.3s;
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #fff;
         }
-        button:hover { background:#ff3366; transform:scale(1.05) }
-        button:disabled { background:#555; cursor:not-allowed }
-        h3 { color:#ff0055; margin-top:30px }
-        .footer { margin-top:50px; color:#666; font-size:14px }
-    </style>
-</head>
-<body>
-    <div class="box">
-        <h1>CodeGhost 👻</h1>
-        <p>لزق الكود + الـ Error... وخلي الشبح يصلحه بـ 3 ثواني</p>
-        <p style="color:#4caf50">ببلاش 20 مرة باليوم - بدون حساب - بدون تنزيل</p>
-        
-        <textarea id="code" placeholder="1. حط الكود كامل هون..."></textarea>
-        <textarea id="error" placeholder="2. حط رسالة الخطأ الحمرا كاملة هون..."></textarea>
-        <br>
-        <button id="btn" onclick="fixBug()">صلحلي ياه يا شبح 🔧</button>
-        
-        <h3>النتيجة - الكود المصح:</h3>
-        <textarea id="result" readonly placeholder="الكود المصح رح يطلع هون بعد 3 ثواني..."></textarea>
-        
-        <div class="footer">
-            صنع بحب من عمان 👻 | إذا عجبك الموقع ادعمني بكاسة قهوة ☕
-        </div>
-    </div>
-
-    <script>
-    async function fixBug() {
-        const btn = document.getElementById('btn');
-        const code = document.getElementById('code').value.trim();
-        const error = document.getElementById('error').value.trim();
-        
-        if(!code || !error) {
-            alert('يا وحش لازم تعبي المربعين! الكود + الـ Error');
-            return;
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
         }
-        
-        btn.disabled = true;
-        btn.innerText = 'الشبح عم يشتغل... استنى 3 ثواني 👻';
-        document.getElementById('result').value = 'جاري تصليح الـ Bug...';
-        
-        try {
-            const res = await fetch('/fix', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({code, error})
-            });
-            const data = await res.json();
-            document.getElementById('result').value = data.fixedCode;
-        } catch(e) {
-            document.getElementById('result').value = 'صار خطأ بالسيرفر. جرب مرة ثانية 👻';
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
         }
-        
-        btn.disabled = false;
-        btn.innerText = 'صلحلي ياه يا شبح 🔧';
-    }
-    </script>
-</body>
-</html>
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ccc;
+        }
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #4a9eff;
+        }
+        button {
+            width: 100%;
+            padding: 16px;
+            background: #4a9eff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s;
+       
