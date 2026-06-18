@@ -12,7 +12,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-// API endpoint
+// API endpoint to fix code
 app.post('/api/fix', async (req, res) => {
     try {
         const { code, error, language } = req.body;
@@ -34,31 +34,4 @@ Code:
 ${code}
 
 Error:
-${error}`;
-
-        const result = await model.generateContent(prompt);
-        const response = result.response.text();
-        
-        // Clean response and parse JSON
-        const jsonStr = response.replace(/```json/g, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(jsonStr);
-        
-        res.json(parsed);
-        
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ 
-            error: 'AI failed to process. Try again.',
-            fixedCode: code 
-        });
-    }
-});
-
-// Serve index.html
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.listen(port, () => {
-    console.log(`CodeGhost AI running on port ${port}`);
-});
+${error
