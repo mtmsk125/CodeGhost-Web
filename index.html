@@ -3,18 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="monetag" content="94f811dbbfcad4f9f306e4656c18c2d6">
-<title>CodeGhost - AI Code Fixer</title>
+<title>CodeGhost 👻 - شبح الكود</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-body{font-family:'Cairo',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);margin:0;padding:20px;min-height:100vh;color:#333}
-.container{max-width:800px;margin:0 auto;background:white;border-radius:20px;padding:40px}
-h1{color:#667eea;text-align:center}
+    body { font-family: 'Cairo', sans-serif; }
+    .glow { box-shadow: 0 0 30px rgba(139, 92, 246, 0.5); }
+    .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
 </style>
 </head>
-<body>
-<div class="container">
-<h1>👻 CodeGhost Free</h1>
-<p>مصحح الأكواد بالذكاء الاصطناعي</p>
+<body class="gradient-bg min-h-screen text-white">
+
+<!-- Header -->
+<div class="text-center pt-10 pb-6">
+    <h1 class="text-6xl font-black mb-3">CodeGhost 👻</h1>
+    <p class="text-xl text-gray-400">انسخ كودك... اترك الباقي علينا</p>
 </div>
-</body>
-</html>
+
+<!-- Main Box -->
+<div class="max-w-4xl mx-auto px-4">
+    <div class="bg-gray-900/60 backdrop-blur-lg rounded-3xl p-8 glow border-purple-500/30">
+        
+        <!-- Input Area -->
+        <textarea 
+            id="codeInput"
+            placeholder="الصق الكود تبعك هون 👇&#10;function hello() {&#10;  console.log('مرحبا يا شبح');&#10;}"
+            class="w-full h-64 bg-black/50 text-green-400 p-6 rounded-2xl border-gray-700 focus:border-purple-500 focus:outline-none font-mono text-lg resize-none"
+        ></textarea>
+
+        <!-- Buttons -->
+        <div class="flex gap-4 mt-6">
+            <button 
+                onclick="runCode()"
+                class="flex-1 bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl font-bold text-xl transition transform hover:scale-105"
+            >
+                ⚡ شغل الكود
+            </button>
+            <button 
+                onclick="clearCode()"
+                class="px-8 bg-gray-700 hover:bg-gray-600 py-4 rounded-2xl font-bold text-xl transition"
+            >
+                🧹 مسح
+            </button>
+        </div>
+
+        <!-- Output -->
+        <div id="outputBox" class="mt-8 hidden">
+            <h3 class="text-lg font-bold mb-3 text-purple-400">النتيجة 👇</h3>
+            <pre id="output" class="bg-black/70 p-6 rounded-2xl text-green-300 font-mono overflow-x-auto min-h-20"></pre>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-10 text-gray-500 text-sm">
+        صنع بـ ❤️ بواسطة سوسول ميه اللي بده ينافس محيطات
+    </div>
+</div>
+
+<script>
+function runCode() {
+    const code = document.getElement.com
