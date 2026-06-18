@@ -23,4 +23,87 @@
 <!-- Title + Ghost -->
 <div class="text-center mb-8">
     <h1 class="text-5xl md:text-6xl font-black mb-4">CodeGhost</h1>
-    <div class="text-8
+    <div class="text-8xl animate-bounce">👻</div>
+    <p class="text-xl text-gray-300 mt-4">انسخ كودك الخربان... اترك الباقي علينا</p>
+</div>
+
+<!-- Main Card -->
+<div class="w-full max-w-lg bg-gray-900/80 backdrop-blur-xl rounded-3xl p-6 glow-box">
+    
+    <!-- Code Input -->
+    <div class="bg-black/70 rounded-2xl p-6 mb-6 min-h-64">
+        <textarea 
+            id="codeInput"
+            placeholder="الصق الكود الخربان هون 👇&#10;function sum(a b) {&#10;  return a + b&#10;}"
+            class="w-full h-48 bg-transparent text-green-400 font-mono text-lg outline-none resize-none"
+        ></textarea>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex gap-4">
+        <button 
+            onclick="clearCode()"
+            class="flex-1 bg-gray-700 hover:bg-gray-600 py-5 rounded-2xl font-bold text-xl transition btn-glow flex items-center justify-center gap-2"
+        >
+            مسح 🧹
+        </button>
+        <button 
+            onclick="runCode()"
+            class="flex-1 bg-purple-600 hover:bg-purple-700 py-5 rounded-2xl font-bold text-xl transition btn-glow flex items-center justify-center gap-2"
+        >
+            شغل ⚡<br>الكود
+        </button>
+    </div>
+
+    <!-- Output -->
+    <div id="outputBox" class="mt-6 hidden">
+        <h3 class="text-lg font-bold mb-3 text-purple-400">CodeGhost صلحلك ياها 👇</h3>
+        <pre id="output" class="bg-black/70 p-5 rounded-2xl text-green-300 font-mono text-right overflow-x-auto min-h-20 whitespace-pre-wrap"></pre>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="text-center mt-8 text-gray-500 text-sm">
+    صنع ب ❤️ بواسطة سوسول ميه اللي بده ينافس محيطات
+</div>
+
+<script>
+function clearCode() {
+    document.getElementById('codeInput').value = '';
+    document.getElementById('outputBox').classList.add('hidden');
+}
+
+async function runCode() {
+    const code = document.getElementById('codeInput').value;
+    const outputBox = document.getElementById('outputBox');
+    const output = document.getElementById('output');
+
+    if (!code.trim()) {
+        alert('الصق كود خربان أول يا شبح 👻');
+        return;
+    }
+
+    outputBox.classList.remove('hidden');
+    output.innerText = 'CodeGhost بفكر... بصلحلك الكود ⏳ استنى 5 ثواني';
+
+    try {
+        const res = await fetch('/api/fix', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: code })
+        });
+
+        const data = await res.json();
+
+        if (data.error) {
+            output.innerText = '❌ ' + data.error;
+        } else {
+            output.innerText = data.result;
+        }
+    } catch (e) {
+        output.innerText = '❌ السيرفر نايم. تأكد 3 شغلات:\n1. عملت push\n2. حطيت OPENAI_API_KEY بـ Render\n3. عملت Manual Deploy';
+    }
+}
+</script>
+</body>
+</html>
