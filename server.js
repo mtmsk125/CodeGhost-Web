@@ -1,38 +1,42 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import OpenAI from 'openai';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const express = require('express');
+const path = require('path');
+const OpenAI = require('openai');
+require('dotenv').config();
 
-dotenv.config();
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+const port = process.env.PORT || 3000;
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
-// دكتور الكود 👨‍⚕️
+app.use(express.json());
+app.use(express.static(path.join(__dirname)));
+
 app.post('/api/fix', async (req, res) => {
-  const { code } = req.body;
-
-  if (!code || !code.trim()) {
-    return res.json({ error: 'وين الكود يا شبح؟ الصندوق فاضي 👻' });
-  }
-
-  if (!process.env.OPENAI_API_KEY) {
-    return res.json({ error: 'نسيت تحط OPENAI_API_KEY بـ Render' });
-  }
-
   try {
-    const prompt = `انت CodeGhost، أشطر مبرمج بالعالم. مهمتك تصليح الكود وشرحه بالعربي العامي.
+    const { code } = req.body;
+    
+    if (!code) {
+      return res.status(400).json({ error: 'ابعتلي كود اصلحه يا شبح' });
+    }
 
-الكود الخربان:
-${code}
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "انت CodeGhost. صلح الكود البرمجي واكتب شرح قصير للخطأ بالعربي" },
+        { role: "user", content: `صلحلي هالكود واشرحلي وين كان الغلط:\n\n${code}` }
+      ],
+      max_tokens: 600,
+      temperature: 0.7
+    });
 
-رجع الجواب بهالصي
+    res.json({ result: completion.choices[0].message.content });
+  } catch (error) {
+    res.status(500).json({ error: 'السيرفر تعبان شوي: ' + error.message });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`CodeGhost شغال على ${port} 👻`);
+});
