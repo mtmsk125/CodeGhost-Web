@@ -7,101 +7,48 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
 <style>
-    body { 
-        font-family: 'Cairo', sans-serif; 
-        background: linear-gradient(180deg, #0a0e27 0%, #121629 100%);
-    }
-    .glow-box { 
-        box-shadow: 0 0 40px rgba(147, 51, 234, 0.4), 0 0 80px rgba(147, 51, 234, 0.2);
-        border: 1px solid rgba(147, 51, 234, 0.3);
-    }
-    .btn-glow:active { transform: scale(0.95); }
+    body { font-family: 'Cairo', sans-serif; background: linear-gradient(180deg, #0a0e27 0%, #121629 100%);}
+    .glow-box { box-shadow: 0 0 40px rgba(147, 51, 234, 0.4); border: 1px solid rgba(147, 51, 234, 0.3);}
 </style>
 </head>
 <body class="min-h-screen text-white flex-col items-center justify-center p-4">
-
-<!-- Title + Ghost -->
 <div class="text-center mb-8">
-    <h1 class="text-5xl md:text-6xl font-black mb-4">CodeGhost</h1>
-    <div class="text-8xl animate-bounce">👻</div>
+    <h1 class="text-5xl font-black mb-4">CodeGhost</h1>
+    <div class="text-8xl">👻</div>
     <p class="text-xl text-gray-300 mt-4">انسخ كودك الخربان... اترك الباقي علينا</p>
 </div>
-
-<!-- Main Card -->
-<div class="w-full max-w-lg bg-gray-900/80 backdrop-blur-xl rounded-3xl p-6 glow-box">
-    
-    <!-- Code Input -->
+<div class="w-full max-w-lg bg-gray-900/80 rounded-3xl p-6 glow-box mx-auto">
     <div class="bg-black/70 rounded-2xl p-6 mb-6 min-h-64">
-        <textarea 
-            id="codeInput"
-            placeholder="الصق الكود الخربان هون 👇&#10;function sum(a b) {&#10;  return a + b&#10;}"
-            class="w-full h-48 bg-transparent text-green-400 font-mono text-lg outline-none resize-none"
-        ></textarea>
+        <textarea id="codeInput" placeholder="الصق الكود الخربان هون 👇" class="w-full h-48 bg-transparent text-green-400 font-mono text-lg outline-none resize-none"></textarea>
     </div>
-
-    <!-- Buttons -->
     <div class="flex gap-4">
-        <button 
-            onclick="clearCode()"
-            class="flex-1 bg-gray-700 hover:bg-gray-600 py-5 rounded-2xl font-bold text-xl transition btn-glow flex items-center justify-center gap-2"
-        >
-            مسح 🧹
-        </button>
-        <button 
-            onclick="runCode()"
-            class="flex-1 bg-purple-600 hover:bg-purple-700 py-5 rounded-2xl font-bold text-xl transition btn-glow flex items-center justify-center gap-2"
-        >
-            شغل ⚡<br>الكود
-        </button>
+        <button onclick="clearCode()" class="flex-1 bg-gray-700 py-5 rounded-2xl font-bold text-xl">مسح 🧹</button>
+        <button onclick="runCode()" class="flex-1 bg-purple-600 py-5 rounded-2xl font-bold text-xl">شغل ⚡<br>الكود</button>
     </div>
-
-    <!-- Output -->
     <div id="outputBox" class="mt-6 hidden">
         <h3 class="text-lg font-bold mb-3 text-purple-400">CodeGhost صلحلك ياها 👇</h3>
         <pre id="output" class="bg-black/70 p-5 rounded-2xl text-green-300 font-mono text-right overflow-x-auto min-h-20 whitespace-pre-wrap"></pre>
     </div>
 </div>
-
-<!-- Footer -->
-<div class="text-center mt-8 text-gray-500 text-sm">
-    صنع ب ❤️ بواسطة سوسول ميه اللي بده ينافس محيطات
-</div>
-
 <script>
 function clearCode() {
     document.getElementById('codeInput').value = '';
     document.getElementById('outputBox').classList.add('hidden');
 }
-
 async function runCode() {
     const code = document.getElementById('codeInput').value;
     const outputBox = document.getElementById('outputBox');
     const output = document.getElementById('output');
-
-    if (!code.trim()) {
-        alert('الصق كود خربان أول يا شبح 👻');
-        return;
-    }
-
+    if (!code.trim()) { alert('الصق كود خربان أول يا شبح 👻'); return; }
     outputBox.classList.remove('hidden');
     output.innerText = 'CodeGhost بفكر... بصلحلك الكود ⏳ استنى 5 ثواني';
-
     try {
-        const res = await fetch('/api/fix', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code: code })
-        });
-
+        const res = await fetch('/api/fix', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code }) });
         const data = await res.json();
-
-        if (data.error) {
-            output.innerText = '❌ ' + data.error;
-        } else {
-            output.innerText = data.result;
-        }
+        if (data.error) { output.innerText = '❌ ' + data.error; } 
+        else { output.innerText = data.result; }
     } catch (e) {
-        output.innerText = '❌ السيرفر نايم. تأكد 3 شغلات:\n1. عملت push\n2. حطيت OPENAI_API_KEY بـ Render\n3. عملت Manual Deploy';
+        output.innerText = '❌ السيرفر نايم. تأكد OPENAI_API_KEY موجود بـ Render وعملت Deploy';
     }
 }
 </script>
