@@ -17,4 +17,7 @@ res.send(`<!DOCTYPE html>
 <title>CodeGhost - AI Code Fixer</title>
 <style>
 body{font-family:'Cairo',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);margin:0;padding:20px;min-height:100vh;color:#333}
-.container{max-width:800px;margin:0 auto;background:white;border-radius:20px;padding:40px;box-shadow:0 20px 60px rgba(0,0,0,0.
+.container{max-width:800px;margin:0 auto;background:white;border-radius:20px;padding:40px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+h1{color:#667eea;text-align:center;font-size:2.5em;margin-bottom:10px}
+.subtitle{text-align:center;color:#666;margin-bottom:30px}
+.adsense{margin:30px 0;text-align:center;min-height:90px;background:#f0f0f0;border-radius:10px
