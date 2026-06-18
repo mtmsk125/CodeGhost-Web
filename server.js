@@ -1,63 +1,42 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
-require('dotenv').config();
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-
+const OpenAI = require('openai');
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json({ limit: '2mb' }));
-app.use(express.static(path.join(__dirname)));
+app.use(express.json());
+app.use(express.static('.'));
 
-if (!process.env.GEMINI_API_KEY) {
-    console.error("❌ GEMINI_API_KEY مش موجود");
-    process.exit(1);
-}
-
-console.log("🚀 Starting CodeGhost...");
-let model;
-try {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
-        generationConfig: { temperature: 0.3, maxOutputTokens: 2000 }
-    });
-    console.log("✅ Gemini initialized");
-} catch(e) {
-    console.error("❌ Gemini Error:", e.message);
-    process.exit(1);
-}
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.post('/api/fix', async (req, res) => {
-    try {
-        const { code, error, language } = req.body;
-        if (!code || !error || !language) {
-            return res.status(400).json({ error: 'الكود والخطأ واللغة مطلوبين' });
-        }
+  try {
+    const {code, error, language} = req.body;
 
-        const prompt = `انت خبير ${language}. صلح الكود واشرح الخطأ بالعربي البسيط واعطي نصيحة.
-الكود: \`\`${language}\n${code}\n\`\`
-الخطأ: ${error}
-ارجع JSON فقط: {"fixedCode":"...","explanation":"...","tip":"..."}`;
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{
+        role: "user",
+        content: `إنت خبير برمجة. صلح الكود التالي بلغة ${language} اللي فيه الخطأ: ${error}
 
-        const result = await model.generateContent(prompt);
-        let text = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
-        res.json(JSON.parse(text));
+كود: ${code}
 
-    } catch (err) {
-        console.error("API Error:", err.message);
-        res.status(500).json({ error: 'خطأ بالسيرفر', details: err.message });
-    }
+رجعلي JSON بس فيه 3 مفاتيح:
+{
+  "fixedCode": "الكود المصح كامل",
+  "explanation": "شرح الخطأ بالعربي ببساطة",
+  "tip": "نصيحة قصيرة عشان ما يكرر الخطأ"
+}`
+      }],
+      response_format: { type: "json_object" }
+    });
+
+    const result = JSON.parse(completion.choices[0].message.content);
+    res.json(result);
+
+  } catch (e) {
+    res.status(500).json({error: e.message});
+  }
 });
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.get('/ping', (req, res) => res.status(200).send('pong'));
-
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Server running on ${PORT}`);
-});
+app.listen(3000, () => console.log('CodeGhost شغال على 3000'));
