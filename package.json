@@ -1,17 +1,18 @@
 {
   "name": "codeghost-web",
   "version": "1.0.0",
-  "description": "AI Bug Fixer - CodeGhost",
-  "type": "module",
+  "description": "AI Bug Fixer",
   "main": "server.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "@google/generative-ai": "^0.21.0"
+    "@google/generative-ai": "^0.21.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
   },
   "engines": {
-    "node": ">=18"
+    "node": "18.x"
   }
 }
