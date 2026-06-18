@@ -3,26 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CodeGhost 👻 - مصلح الكود بالذكاء الاصطناعي</title>
+<title>CodeGhost 👻 - مصلح الكود بالـ AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#38bdf8; --green:#22c55e;
-}
-body.light{--bg:#f1f5f9; --card:#fff; --text:#0f172a; --accent:#0ea5e9}
+:root{--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--accent:#38bdf8;--green:#22c55e}
+body.light{--bg:#f8fafc;--card:#fff;--text:#0f172a;--accent:#0ea5e9}
 *{box-sizing:border-box;font-family:'Cairo',sans-serif}
 body{background:var(--bg);color:var(--text);margin:0;padding:20px;transition:0.3s}
 .container{max-width:900px;margin:auto}
-h1{text-align:center;color:var(--accent)}
-.card{background:var(--card);padding:20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-top:20px}
-textarea,select{width:100%;background:var(--bg);color:var(--text);border:1px solid #334155;border-radius:8px;padding:12px;font-size:14px;font-family:'Cascadia Code',monospace;resize:vertical}
-textarea{height:180px}
-select{margin:10px 0}
-.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-button{background:var(--accent);color:#fff;border:none;padding:12px 18px;border-radius:8px;cursor:pointer;font-weight:bold;transition:0.2s}
-button:hover{opacity:0.9}
+h1{text-align:center;color:var(--accent);font-size:2.5rem}
+.subtitle{text-align:center;opacity:0.7;margin-bottom:30px}
+.card{background:var(--card);padding:25px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+label{display:block;margin-top:15px;font-weight:bold}
+textarea,select{width:100%;background:var(--bg);color:var(--text);border:1px solid #334155;border-radius:10px;padding:14px;font-size:15px;font-family:'Cascadia Code',monospace;resize:vertical;margin-top:8px}
+textarea{height:200px}
+select{height:50px}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+button{background:var(--accent);color:#fff;border:none;padding:14px 22px;border-radius:10px;cursor:pointer;font-weight:bold;font-size:16px;transition:0.2s;flex:1}
+button:hover{transform:translateY(-2px)}
 button.green{background:var(--green)}
 button.gray{background:#475569}
-.result{background:var(--bg);padding:15px;border-radius:8px;margin-top:15px;border-right:4px solid var(--accent);display:none}
+.result{background:var(--bg);padding:20px;border-radius:12px;margin-top:25px;border-right:5px solid var(--accent);display:none}
+pre{white-space:pre-wrap;word-wrap:break-word;background:#000;color:#4ade80;padding:15px;border-radius:8px;overflow-x:auto}
 .topbar{display:flex;justify-content:space-between;align-items:center}
 </style>
 </head>
@@ -30,16 +32,22 @@ button.gray{background:#475569}
 <div class="container">
   <div class="topbar">
     <h1>CodeGhost 👻</h1>
-    <button class="gray" onclick="toggleTheme()">🌓 الوضع</button>
+    <button class="gray" onclick="toggleTheme()">🌓</button>
   </div>
-  <p style="text-align:center;opacity:0.7">الصق الكود الخربان + رسالة الخطأ، وخلي الذكاء الاصطناعي يصلحه ويشرحلك بالعربي</p>
-  
+  <p class="subtitle">الصق الكود الخربان + الخطأ، والـ AI بصلحه وبيشرحلك بالعربي البسيط</p>
+
   <div class="card">
     <label>لغة البرمجة:</label>
     <select id="lang">
       <option>JavaScript</option><option>Python</option><option>HTML/CSS</option>
       <option>C++</option><option>Java</option><option>PHP</option><option>SQL</option>
     </select>
-    
-    <label>الكود:</label>
-    
+
+    <label>الكود الخربان:</label>
+    <textarea id="code" placeholder="// الصق الكود هون..."></textarea>
+
+    <label>رسالة الخطأ من التيرمنال:</label>
+    <textarea id="error" placeholder="Error: Cannot read property..." style="height:90px"></textarea>
+
+    <div class="btns">
+      <button onclick="fixCode
