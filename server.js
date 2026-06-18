@@ -1,37 +1,41 @@
 const express = require('express');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-const path = require('path');
+const cors = require('cors');
 require('dotenv').config();
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
+app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname)));
 
-// API endpoint to fix code
+// 1. تهيئة Gemini
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+// 2. API الرئيسي - تصليح الكود
 app.post('/api/fix', async (req, res) => {
     try {
         const { code, error, language } = req.body;
         
-        if (!code || !error) {
-            return res.status(400).json({ error: 'Code and Error are required' });
-        }
-
-        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        const prompt = `You are an expert ${language} developer. 
+        Fix this code error and explain it simply in Arabic.
         
-        const prompt = `You are a senior ${language} developer. Fix the code and explain the bug clearly.
-Return ONLY valid JSON with this exact format:
-{
-  "fixedCode": "the corrected code here",
-  "explanation": "simple explanation why the bug happened and how the fix works"
-}
+        Code:
+        ${code}
+        
+        Error:
+        ${error}
+        
+        Return JSON format only:
+        {
+            "fixedCode": "الكود المصح كامل",
+            "explanation": "شرح بسيط بالعربي لسبب الخطأ وكيف تم التصليح"
+        }`;
 
-Code:
-${code}
-
-Error:
-${error
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+        
+        // تنظيف الرد عشان يصير JSON صافي
+        const jsonStr = text.replace(/```json/g, '').replace
