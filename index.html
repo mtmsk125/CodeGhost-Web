@@ -2,52 +2,54 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CodeGhost 👻 - مصلح الكود بالـ AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<title>CodeGhost 👻</title>
 <style>
-:root{--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--accent:#38bdf8;--green:#22c55e}
-body.light{--bg:#f8fafc;--card:#fff;--text:#0f172a;--accent:#0ea5e9}
-*{box-sizing:border-box;font-family:'Cairo',sans-serif}
-body{background:var(--bg);color:var(--text);margin:0;padding:20px;transition:0.3s}
-.container{max-width:900px;margin:auto}
-h1{text-align:center;color:var(--accent);font-size:2.5rem}
-.subtitle{text-align:center;opacity:0.7;margin-bottom:30px}
-.card{background:var(--card);padding:25px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.4)}
-label{display:block;margin-top:15px;font-weight:bold}
-textarea,select{width:100%;background:var(--bg);color:var(--text);border:1px solid #334155;border-radius:10px;padding:14px;font-size:15px;font-family:'Cascadia Code',monospace;resize:vertical;margin-top:8px}
-textarea{height:200px}
-select{height:50px}
-.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
-button{background:var(--accent);color:#fff;border:none;padding:14px 22px;border-radius:10px;cursor:pointer;font-weight:bold;font-size:16px;transition:0.2s;flex:1}
-button:hover{transform:translateY(-2px)}
-button.green{background:var(--green)}
-button.gray{background:#475569}
-.result{background:var(--bg);padding:20px;border-radius:12px;margin-top:25px;border-right:5px solid var(--accent);display:none}
-pre{white-space:pre-wrap;word-wrap:break-word;background:#000;color:#4ade80;padding:15px;border-radius:8px;overflow-x:auto}
-.topbar{display:flex;justify-content:space-between;align-items:center}
+body{background:#0f172a;color:#e2e8f0;font-family:Cairo;padding:20px}
+.container{max-width:800px;margin:auto}
+.card{background:#1e293b;padding:25px;border-radius:16px;margin-top:20px}
+textarea,select{width:100%;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:10px;padding:14px;font-size:15px;margin-top:8px}
+button{background:#38bdf8;color:#fff;border:none;padding:14px;border-radius:10px;cursor:pointer;font-weight:bold;margin-top:15px;width:100%}
+pre{background:#000;color:#4ade80;padding:15px;border-radius:8px}
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="topbar">
-    <h1>CodeGhost 👻</h1>
-    <button class="gray" onclick="toggleTheme()">🌓</button>
-  </div>
-  <p class="subtitle">الصق الكود الخربان + الخطأ، والـ AI بصلحه وبيشرحلك بالعربي البسيط</p>
+<h1 style="text-align:center;color:#38bdf8">CodeGhost 👻</h1>
+<p style="text-align:center;opacity:0.7">الصق الكود الخربان والخطأ والـ AI بصلحه</p>
 
-  <div class="card">
-    <label>لغة البرمجة:</label>
-    <select id="lang">
-      <option>JavaScript</option><option>Python</option><option>HTML/CSS</option>
-      <option>C++</option><option>Java</option><option>PHP</option><option>SQL</option>
-    </select>
+<div class="card">
+<label>لغة البرمجة:</label>
+<select id="lang"><option>JavaScript</option><option>Python</option><option>HTML/CSS</option></select>
 
-    <label>الكود الخربان:</label>
-    <textarea id="code" placeholder="// الصق الكود هون..."></textarea>
+<label>الكود الخربان:</label>
+<textarea id="code" placeholder="// الصق الكود هون"></textarea>
 
-    <label>رسالة الخطأ من التيرمنال:</label>
-    <textarea id="error" placeholder="Error: Cannot read property..." style="height:90px"></textarea>
+<label>رسالة الخطأ:</label>
+<textarea id="error" placeholder="Error:..." style="height:90px"></textarea>
 
-    <div class="btns">
-      <button onclick="fixCode
+<button onclick="fixCode()">🔧 صلح الكود</button>
+
+<div id="result" style="display:none;margin-top:20px">
+<h3>الكود المصح:</h3><pre id="fixedCode"></pre>
+<h3>الشرح:</h3><p id="explanation"></p>
+</div>
+</div>
+</div>
+
+<script>
+const API_URL = 'https://codeghost-web.onrender.com/api/fix';
+async function fixCode(){
+  const code=document.getElementById('code').value;
+  const error=document.getElementById('error').value;
+  const lang=document.getElementById('lang').value;
+  if(!code || !error){alert('عبي الكود والخطأ');return}
+  
+  const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,error,language:lang})});
+  const data=await res.json();
+  document.getElementById('fixedCode').innerText=data.fixedCode;
+  document.getElementById('explanation').innerText=data.explanation;
+  document.getElementById('result').style.display='block';
+}
+</script>
+</body>
+</html>
