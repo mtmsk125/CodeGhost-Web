@@ -13,7 +13,7 @@ res.send(`<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="monetag" content="94f811dbbfcad4f9f306e4656c18c2d6"> <!-- هاد للتحقق -->
+<meta name="monetag" content="94f811dbbfcad4f9f306e4656c18c2d6">
 <title>CodeGhost - AI Code Fixer</title>
 <style>
 body{font-family:'Cairo',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);margin:0;padding:20px;min-height:100vh;color:#333}
@@ -43,5 +43,4 @@ button:disabled{opacity:0.6;cursor:not-allowed}
 <!-- ADSENSE_AD_CODE -->
 </div>
 
-<label>الصق الكود اللي فيه خطأ:</label>
-<textarea id="codeInput" placeholder="function test() { console.log('hello' }
+<label>الصق الكود اللي فيه خطأ:</label
