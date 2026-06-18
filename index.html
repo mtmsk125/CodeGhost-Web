@@ -13,51 +13,23 @@
             padding: 40px 20px;
             min-height: 100vh;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-        .subtitle {
-            text-align: center;
-            color: #888;
-            margin-bottom: 40px;
-            font-size: 1.1rem;
-        }
-        .card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #ccc;
-        }
-        textarea {
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { text-align: center; font-size: 2.5rem; margin-bottom: 10px; color: #fff; }
+        .subtitle { text-align: center; color: #888; margin-bottom: 40px; font-size: 1.1rem; }
+        .card { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 30px; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: #ccc; margin-top: 15px; }
+        select, textarea {
             width: 100%;
-            min-height: 150px;
             background: #0a0a0a;
             border: 1px solid #333;
             border-radius: 8px;
             padding: 15px;
             color: #e0e0e0;
-            font-family: 'Courier New', monospace;
             font-size: 14px;
-            resize: vertical;
         }
-        textarea:focus {
-            outline: none;
-            border-color: #4a9eff;
-        }
+        textarea { min-height: 150px; font-family: 'Courier New', monospace; resize: vertical; }
+        select { height: 50px; cursor: pointer; }
+        textarea:focus, select:focus { outline: none; border-color: #4a9eff; }
         button {
             width: 100%;
             padding: 16px;
@@ -70,4 +42,101 @@
             cursor: pointer;
             margin-top: 20px;
             transition: background 0.2s;
-       
+        }
+        button:hover { background: #3a8eef; }
+        button:disabled { background: #333; cursor: not-allowed; }
+        .btn-secondary {
+            background: #333;
+            margin-top: 10px;
+        }
+        .btn-secondary:hover { background: #444; }
+        .result { margin-top: 30px; }
+        .footer { text-align: center; margin-top: 40px; color: #666; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CodeGhost AI</h1>
+        <p class="subtitle">Professional Bug Fixing Assistant Powered by Gemini AI</p>
+        
+        <div class="card">
+            <label>Language:</label>
+            <select id="langSelect">
+                <option>JavaScript</option>
+                <option>Python</option>
+                <option>C++</option>
+                <option>Java</option>
+                <option>TypeScript</option>
+            </select>
+            
+            <label>Code:</label>
+            <textarea id="codeInput" placeholder="Paste your code here..."></textarea>
+            
+            <label>Error Message:</label>
+            <textarea id="errorInput" placeholder="Paste the full error message here..."></textarea>
+            
+            <button id="fixBtn">Fix Code with AI</button>
+            
+            <div class="result" id="resultSection" style="display:none;">
+                <label>Fixed Code:</label>
+                <textarea id="resultOutput" readonly></textarea>
+                <button class="btn-secondary" onclick="navigator.clipboard.writeText(resultOutput.value)">Copy Code</button>
+                
+                <label>Explanation:</label>
+                <textarea id="explanationOutput" readonly style="min-height:100px; background:#111;"></textarea>
+            </div>
+        </div>
+        
+        <div class="footer">
+            © 2026 CodeGhost AI. Built with Node.js + Gemini AI
+        </div>
+    </div>
+
+    <script>
+        const fixBtn = document.getElementById('fixBtn');
+        const codeInput = document.getElementById('codeInput');
+        const errorInput = document.getElementById('errorInput');
+        const langSelect = document.getElementById('langSelect');
+        const resultSection = document.getElementById('resultSection');
+        const resultOutput = document.getElementById('resultOutput');
+        const explanationOutput = document.getElementById('explanationOutput');
+
+        fixBtn.addEventListener('click', async () => {
+            const code = codeInput.value.trim();
+            const error = errorInput.value.trim();
+            const language = langSelect.value;
+            
+            if (!code || !error) {
+                alert('Please fill both fields: Code and Error Message');
+                return;
+            }
+            
+            fixBtn.disabled = true;
+            fixBtn.textContent = 'Fixing...';
+            
+            try {
+                const response = await fetch('/api/fix', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, error, language })
+                });
+                
+                const data = await response.json();
+                
+                if (data.fixedCode) {
+                    resultOutput.value = data.fixedCode;
+                    explanationOutput.value = data.explanation || 'No explanation provided';
+                    resultSection.style.display = 'block';
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to fix code'));
+                }
+            } catch (err) {
+                alert('Connection error. Please try again.');
+            }
+            
+            fixBtn.disabled = false;
+            fixBtn.textContent = 'Fix Code with AI';
+        });
+    </script>
+</body>
+</html>
